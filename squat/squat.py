@@ -27,10 +27,10 @@ while cap.isOpened():
         hip = detector.findAngle(img, 23,25,27)
         
         #Percentage of success of pushup
-        per = np.interp(hip, (90, 160), (0, 100))
+        per = np.interp(hip, (90, 180), (0, 100))
         
         #Bar to show Pushup progress
-        bar = np.interp(hip, (90, 160), (380, 50))
+        bar = np.interp(hip, (90, 180), (380, 50))
 
         #Check to ensure right form before starting the program
         if hip <= 90:
