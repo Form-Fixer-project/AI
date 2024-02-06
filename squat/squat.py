@@ -67,12 +67,6 @@ while cap.isOpened():
             cv2.rectangle(img, (580, int(bar)), (600, 380), (0, 255, 0), cv2.FILLED)
             cv2.putText(img, f'{int(per)}%', (565, 430), cv2.FONT_HERSHEY_PLAIN, 2,
                         (255, 0, 0), 2)
-
-
-        #Pushup counter
-        cv2.rectangle(img, (0, 380), (100, 480), (0, 255, 0), cv2.FILLED)
-        cv2.putText(img, str(int(count)), (25, 455), cv2.FONT_HERSHEY_PLAIN, 5,
-                    (255, 0, 0), 5)
         
         #Feedback 
         cv2.rectangle(img, (500, 0), (640, 40), (255, 255, 255), cv2.FILLED)
