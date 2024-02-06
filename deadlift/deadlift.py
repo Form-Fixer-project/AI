@@ -27,19 +27,19 @@ while cap.isOpened():
         hip = detector.findAngle(img, 23,25,27)
         
         #Percentage of success of pushup
-        per = np.interp(hip, (100, 180), (0, 100))
+        per = np.interp(hip, (115, 180), (0, 100))
         
         #Bar to show Pushup progress
-        bar = np.interp(hip, (100, 180), (380, 50))
+        bar = np.interp(hip, (115, 180), (380, 50))
 
         #Check to ensure right form before starting the program
-        if hip <= 100:
+        if hip <= 115:
             form = 1
     
         #Check for full range of motion for the pushup
         if form == 1:
             if per == 0:
-                if hip <= 100:
+                if hip <= 115:
                     feedback = "Up"
                     if direction == 0:
                         count += 0.5
@@ -74,7 +74,7 @@ while cap.isOpened():
                     (0, 255, 0), 2)
 
         
-    cv2.imshow('Squat counter', img)
+    cv2.imshow('Deadlift count', img)
     if cv2.waitKey(10) & 0xFF == ord('q'):
         break
         
