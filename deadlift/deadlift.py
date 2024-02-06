@@ -47,7 +47,7 @@ while cap.isOpened():
                 else:
                     feedback = "Fix Form"
                     
-            if per == 100:
+            if per >= 98.5:
                 if hip >= 160:
                     feedback = "Down"
                     if direction == 1:
