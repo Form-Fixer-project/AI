@@ -28,10 +28,10 @@ while cap.isOpened():
         
         
         #Percentage of success of pushup
-        per = np.interp(arm, (90, 160), (0, 100))
+        per = np.interp(arm, (60, 160), (0, 100))
         
         #Bar to show Pushup progress
-        bar = np.interp(arm, (90, 160), (380, 50))
+        bar = np.interp(arm, (60, 160), (380, 50))
 
         #Check to ensure right form before starting the program
         if arm > 170:
@@ -40,7 +40,7 @@ while cap.isOpened():
         #Check for full range of motion for the pushup
         if form == 1:
             if per == 0:
-                if arm < 90:
+                if arm < 60:
                     feedback = "Unfold"
                     if direction == 0:
                         count += 0.5
@@ -48,8 +48,8 @@ while cap.isOpened():
                 else:
                     feedback = "Fix Form"
                     
-            if per == 100:
-                if arm > 170:
+            if per >= 98:
+                if arm > 161:
                     feedback = "Fold"
                     if direction == 1:
                         count += 0.5
