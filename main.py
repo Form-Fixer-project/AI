@@ -64,7 +64,7 @@ async def generate_frames():
         yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
-@app.get("/")
+@app.get("/sit-up")
 async def get_video():
     return StreamingResponse(generate_frames(), media_type="multipart/x-mixed-replace;boundary=frame")
 
