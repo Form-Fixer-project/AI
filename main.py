@@ -29,14 +29,14 @@ async def generate_frames():
         lmList = detector.findPosition(img, False)
         if len(lmList) != 0:
             Abs = detector.findAngle(img, 11, 23, 25)
-            per = np.interp(Abs, (115, 180), (0, 100))
-            bar = np.interp(Abs, (115, 180), (380, 50))
+            per = np.interp(Abs, (60, 130), (100, 0))
+            bar = np.interp(Abs, (60, 130), (50, 380))
             global count, direction, form, feedback
-            if Abs <= 115:
+            if Abs <= 130:
                 form = 1
             if form == 1:
                 if per == 0:
-                    if Abs >= 110:
+                    if Abs >= 130:
                         feedback = "Up"
                         if direction == 0:
                             count += 0.5
