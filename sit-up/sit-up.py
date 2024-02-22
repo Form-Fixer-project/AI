@@ -27,19 +27,19 @@ while cap.isOpened():
         Abs = detector.findAngle(img, 11,23,25)
         
         #Percentage of success of pushup
-        per = np.interp(Abs, (60, 130), (100, 0))
+        per = np.interp(Abs, (115, 180), (0, 100))
         
         #Bar to show Pushup progress
-        bar = np.interp(Abs, (60, 130), (50, 380))
+        bar = np.interp(Abs, (115, 180), (380, 50))
 
         #Check to ensure right form before starting the program
-        if Abs <= 130:
+        if Abs <= 115:
             form = 1
     
         #Check for full range of motion for the pushup
         if form == 1:
             if per == 0:
-                if Abs >= 130:
+                if Abs >= 110:
                     feedback = "Up"
                     if direction == 0:
                         count += 0.5
