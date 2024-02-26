@@ -28,15 +28,17 @@ async def generate_frames():
         img = detector.findPose(img, False)
         lmList = detector.findPosition(img, False)
         if len(lmList) != 0:
-            Abs = detector.findAngle(img, 11, 23, 25)
-            per = np.interp(Abs, (60, 130), (100, 0))
-            bar = np.interp(Abs, (60, 130), (50, 380))
+            hip = detector.findAngle(img, 23, 25, 27)
+
+            per = np.interp(hip, (115, 180), (0, 100))
+            bar = np.interp(hip, (115, 180), (380, 50))
             global count, direction, form, feedback
-            if Abs <= 130:
+            if hip <= 115:
                 form = 1
+
             if form == 1:
                 if per == 0:
-                    if Abs >= 130:
+                    if hip <= 115:
                         feedback = "Up"
                         if direction == 0:
                             count += 0.5
@@ -44,7 +46,7 @@ async def generate_frames():
                     else:
                         feedback = "Fix Form"
                 if per >= 98.5:
-                    if Abs <= 60:
+                    if hip >= 160:
                         feedback = "Down"
                         if direction == 1:
                             count += 0.5
@@ -57,17 +59,23 @@ async def generate_frames():
             cv2.rectangle(img, (580, int(bar)), (600, 380), (0, 255, 0), cv2.FILLED)
             cv2.putText(img, f'{int(per)}%', (565, 430), cv2.FONT_HERSHEY_PLAIN, 2,
                         (255, 0, 0), 2)
+        
+        cv2.rectangle(img, (500, 0), (640, 40), (255, 255, 255), cv2.FILLED)
+        cv2.putText(img, feedback, (500, 40 ), cv2.FONT_HERSHEY_PLAIN, 2,
+                    (0, 255, 0), 2)
 
         # Encode image to JPEG
         _, buffer = cv2.imencode('.jpg', img)
         frame_bytes = buffer.tobytes()
         yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+        
 
-@app.get("/sit-up")
+@app.get("/deadlift")
 async def get_video():
     return StreamingResponse(generate_frames(), media_type="multipart/x-mixed-replace;boundary=frame")
 
+
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app="deadlift:app", port=8001)

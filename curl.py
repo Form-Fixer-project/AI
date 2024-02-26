@@ -28,30 +28,24 @@ async def generate_frames():
         img = detector.findPose(img, False)
         lmList = detector.findPosition(img, False)
         if len(lmList) != 0:
-            elbow = detector.findAngle(img, 11, 13, 15)
-            shoulder = detector.findAngle(img, 13, 11, 23)
-            hip = detector.findAngle(img, 11, 23,25)
-        
-            per = np.interp(elbow, (90, 160), (0, 100))
-            bar = np.interp(elbow, (90, 160), (380, 50))
-
+            arm = detector.findAngle(img, 11, 13, 15)
+            per = np.interp(arm, (60, 160), (0, 100))
+            bar = np.interp(arm, (60, 160), (380, 50))
             global count, direction, form, feedback
-            if elbow > 160 and shoulder > 40 and hip > 160:
-              form = 1
-
+            if arm > 170:
+                form = 1
             if form == 1:
                 if per == 0:
-                    if elbow <= 90 and hip > 160:
-                        feedback = "Up"
+                    if arm < 60:
+                        feedback = "Unfold"
                         if direction == 0:
                             count += 0.5
                             direction = 1
                     else:
                         feedback = "Fix Form"
-
-                if per >= 100:
-                    if elbow > 160 and shoulder > 40 and hip > 160:
-                        feedback = "Down"
+                if per >= 98.5:
+                    if arm <= 161:
+                        feedback = "Fold"
                         if direction == 1:
                             count += 0.5
                             direction = 0
@@ -75,10 +69,11 @@ async def generate_frames():
                 b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
         
 
-@app.get("/push-up")
+@app.get("/curl")
 async def get_video():
     return StreamingResponse(generate_frames(), media_type="multipart/x-mixed-replace;boundary=frame")
 
+
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app="push-up:app", host="0.0.0.0", port=8003)
+    uvicorn.run(app="curl:app", port=8000)

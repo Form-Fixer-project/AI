@@ -28,25 +28,29 @@ async def generate_frames():
         img = detector.findPose(img, False)
         lmList = detector.findPosition(img, False)
         if len(lmList) != 0:
-            hip = detector.findAngle(img, 23, 25, 27)
+            elbow = detector.findAngle(img, 11, 13, 15)
+            shoulder = detector.findAngle(img, 13, 11, 23)
+            hip = detector.findAngle(img, 11, 23,25)
+        
+            per = np.interp(elbow, (90, 160), (0, 100))
+            bar = np.interp(elbow, (90, 160), (380, 50))
 
-            per = np.interp(hip, (115, 180), (0, 100))
-            bar = np.interp(hip, (115, 180), (380, 50))
             global count, direction, form, feedback
-            if hip <= 115:
-                form = 1
+            if elbow > 160 and shoulder > 40 and hip > 160:
+              form = 1
 
             if form == 1:
                 if per == 0:
-                    if hip <= 115:
+                    if elbow <= 90 and hip > 160:
                         feedback = "Up"
                         if direction == 0:
                             count += 0.5
                             direction = 1
                     else:
                         feedback = "Fix Form"
-                if per >= 98.5:
-                    if hip >= 160:
+
+                if per >= 100:
+                    if elbow > 160 and shoulder > 40 and hip > 160:
                         feedback = "Down"
                         if direction == 1:
                             count += 0.5
@@ -71,10 +75,10 @@ async def generate_frames():
                 b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
         
 
-@app.get("/deadlift")
+@app.get("/push-up")
 async def get_video():
     return StreamingResponse(generate_frames(), media_type="multipart/x-mixed-replace;boundary=frame")
 
-if __name__ == "__deadlift__":
+if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app="deadlift:app", host="0.0.0.0", port=8002)
+    uvicorn.run(app="push-up:app", port=8002)

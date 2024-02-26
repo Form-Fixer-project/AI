@@ -28,24 +28,26 @@ async def generate_frames():
         img = detector.findPose(img, False)
         lmList = detector.findPosition(img, False)
         if len(lmList) != 0:
-            arm = detector.findAngle(img, 11, 13, 15)
-            per = np.interp(arm, (60, 160), (0, 100))
-            bar = np.interp(arm, (60, 160), (380, 50))
+            hip = detector.findAngle(img, 23, 25, 27)
+
+            per = np.interp(hip, (100, 180), (0, 100))
+            bar = np.interp(hip, (100, 180), (380, 50))
             global count, direction, form, feedback
-            if arm > 170:
+            if hip <= 100:
                 form = 1
+
             if form == 1:
                 if per == 0:
-                    if arm < 60:
-                        feedback = "Unfold"
+                    if hip <= 100:
+                        feedback = "Up"
                         if direction == 0:
                             count += 0.5
                             direction = 1
                     else:
                         feedback = "Fix Form"
-                if per >= 98.5:
-                    if arm <= 161:
-                        feedback = "Fold"
+                if per == 100:
+                    if hip >= 160:
+                        feedback = "Down"
                         if direction == 1:
                             count += 0.5
                             direction = 0
@@ -69,10 +71,10 @@ async def generate_frames():
                 b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
         
 
-@app.get("/curl")
+@app.get("/squat")
 async def get_video():
     return StreamingResponse(generate_frames(), media_type="multipart/x-mixed-replace;boundary=frame")
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run(app="squat:app", port=8004)
