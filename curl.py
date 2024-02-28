@@ -29,8 +29,8 @@ async def generate_frames():
         lmList = detector.findPosition(img, False)
         if len(lmList) != 0:
             arm = detector.findAngle(img, 11, 13, 15)
-            per = np.interp(arm, (60, 160), (0, 100))
-            bar = np.interp(arm, (60, 160), (380, 50))
+            per = np.interp(arm, (60, 160), (100, 0))
+            bar = np.interp(arm, (60, 160), (50, 380))
             global count, direction, form, feedback
             if arm > 170:
                 form = 1
