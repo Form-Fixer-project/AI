@@ -7,16 +7,13 @@ import asyncio
 
 app = FastAPI()
 
-# Load the pose detection module
 detector = pm.poseDetector()
 
-# Variables for counting push-ups
 count = 0
 direction = 0
 form = 0
 feedback = "Fix Form"
 
-# Function to generate image frames
 async def generate_frames():
     cap = cv2.VideoCapture(0)
     while cap.isOpened():
@@ -24,7 +21,7 @@ async def generate_frames():
         if not ret:
             break
 
-        # Process image
+        # 이미지 처리
         img = detector.findPose(img, False)
         lmList = detector.findPosition(img, False)
         if len(lmList) != 0:
@@ -62,16 +59,15 @@ async def generate_frames():
         cv2.putText(img, feedback, (500, 40 ), cv2.FONT_HERSHEY_PLAIN, 2,
                     (0, 255, 0), 2)
 
-        # Encode image to JPEG
+        
         _, buffer = cv2.imencode('.jpg', img)
         frame_bytes = buffer.tobytes()
         yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
+# FastAPI 서버
 @app.get("/sit-up")
 async def get_video():
     return StreamingResponse(generate_frames(), media_type="multipart/x-mixed-replace;boundary=frame")
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app="sit-up:app", port=8003)
+
